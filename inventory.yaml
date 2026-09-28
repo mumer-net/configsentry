@@ -1,0 +1,15 @@
+# Devices ConfigSentry audits. Hosts and ports come from each sandbox's Quick Access tab.
+# Credentials never go here: each device names the .env variables that hold them.
+devices:
+  - name: c8k
+    host: devnetsandboxiosxec8k.cisco.com
+    port: 22
+    device_type: cisco_xe
+    username_env: C8K_USERNAME
+    password_env: C8K_PASSWORD
+  - name: c9k
+    host: devnetsandboxiosxec9k.cisco.com
+    port: 22
+    device_type: cisco_xe
+    username_env: C9K_USERNAME
+    password_env: C9K_PASSWORD

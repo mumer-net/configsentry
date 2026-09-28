@@ -1,0 +1,38 @@
+[project]
+name = "configsentry"
+version = "0.1.0"
+description = "Compliance and drift auditor for Cisco IOS-XE and Meraki networks"
+readme = "README.md"
+requires-python = ">=3.12"
+license = "MIT"
+dependencies = [
+    "jinja2>=3.1.6",
+    "netmiko>=4.8,<5",
+    "python-dotenv>=1.2",
+    "pyyaml>=6.0.3",
+    "rich>=14",
+]
+
+[project.scripts]
+configsentry = "configsentry.cli:main"
+
+[dependency-groups]
+dev = ["pytest>=9", "ruff>=0.16"]
+
+[build-system]
+requires = ["uv_build>=0.12,<0.13"]
+build-backend = "uv_build"
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+[tool.ruff.lint]
+# E/F: errors, I: import order, UP: modern syntax, B: likely bugs, S: security (bandit)
+select = ["E", "F", "I", "UP", "B", "S"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101", "S603", "S607"]  # asserts and subprocess are fine in tests
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
