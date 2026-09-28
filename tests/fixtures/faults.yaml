@@ -1,0 +1,112 @@
+# Seeded faults. Each one breaks exactly one rule in golden.cfg.
+# `configsentry selftest` applies each fault and checks that its rule fails and no other rule does.
+# Keys: rule, why, then one of remove | add | replace (+ with), optionally inside `under` (a block).
+
+- rule: CS-01
+  why: SSH version 2 not enforced
+  remove: ip ssh version 2
+
+- rule: CS-02
+  why: Telnet allowed on VTY 0-4
+  replace: transport input ssh
+  with: transport input telnet ssh
+  under: line vty 0 4
+
+- rule: CS-02
+  why: Every protocol allowed on VTY 5-15
+  replace: transport input ssh
+  with: transport input all
+  under: line vty 5 15
+
+- rule: CS-02
+  why: VTY 5-15 relies on the release default
+  remove: transport input ssh
+  under: line vty 5 15
+
+- rule: CS-03
+  why: VTY 0-4 never times out
+  replace: exec-timeout 5 0
+  with: exec-timeout 0 0
+  under: line vty 0 4
+
+- rule: CS-03
+  why: VTY 5-15 idle timeout of 30 minutes
+  replace: exec-timeout 5 0
+  with: exec-timeout 30 0
+  under: line vty 5 15
+
+- rule: CS-04
+  why: Console never times out
+  replace: exec-timeout 5 0
+  with: exec-timeout 0 0
+  under: line con 0
+
+- rule: CS-04
+  why: Console idle timeout of 10 minutes 30 seconds
+  replace: exec-timeout 5 0
+  with: exec-timeout 10 30
+  under: line con 0
+
+- rule: CS-05
+  why: VTY 0-4 open to any source address
+  remove: access-class MGMT-SSH in
+  under: line vty 0 4
+
+- rule: CS-05
+  why: VTY 5-15 open to any source address
+  remove: access-class MGMT-SSH in
+  under: line vty 5 15
+
+- rule: CS-06
+  why: No enable secret
+  remove: enable secret 9 $9$EXAMPLEsalt0001$EXAMPLEONLYnotARealHashDoNotUseEXAMPLEONLY00
+
+- rule: CS-06
+  why: Reversible enable password added
+  add: enable password 7 0822455D0A16
+
+- rule: CS-07
+  why: Password encryption service off
+  remove: service password-encryption
+
+- rule: CS-08
+  why: Local user with a plaintext password
+  add: username backup privilege 1 password 0 Backup123
+
+- rule: CS-09
+  why: Default community "public"
+  add: snmp-server community public RO
+
+- rule: CS-09
+  why: Default community "private"
+  add: snmp-server community private RO
+
+- rule: CS-10
+  why: Read-write SNMP community
+  add: snmp-server community Ops-Write RW
+
+- rule: CS-11
+  why: AAA turned off
+  remove: aaa new-model
+
+- rule: CS-12
+  why: SSH login timeout of 120 seconds
+  replace: ip ssh time-out 60
+  with: ip ssh time-out 120
+
+- rule: CS-12
+  why: SSH login timeout left at the default
+  remove: ip ssh time-out 60
+
+- rule: CS-13
+  why: No remote syslog server
+  remove: logging host 192.0.2.50
+
+- rule: CS-14
+  why: Debug timestamps use uptime, not date and time
+  replace: service timestamps debug datetime msec show-timezone
+  with: service timestamps debug uptime
+
+- rule: CS-15
+  why: No login banner
+  remove: banner login
