@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ConfigSentry report</title>
+<style>
+  :root { --bg:#f7f7f5; --card:#fff; --ink:#1d1d1b; --muted:#6b6b66; --line:#e3e3de;
+          --pass:#1f7a4d; --fail:#b3261e; --pass-bg:#e6f4ec; --fail-bg:#fbe9e7; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#161615; --card:#1f1f1d; --ink:#ecece8; --muted:#a3a39d; --line:#34342f;
+            --pass:#7fd1a4; --fail:#f2a19a; --pass-bg:#1d3327; --fail-bg:#3a201d; }
+  }
+  body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.5 system-ui, sans-serif; }
+  main { max-width:1080px; margin:0 auto; padding:24px 16px 48px; }
+  h1 { font-size:22px; margin:0 0 4px; }
+  .sub { color:var(--muted); margin:0 0 24px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:20px; margin-bottom:20px; }
+  .head { display:flex; flex-wrap:wrap; gap:8px 24px; align-items:baseline; margin-bottom:12px; }
+  .head h2 { font-size:18px; margin:0; }
+  .score { font-weight:700; font-variant-numeric:tabular-nums; }
+  .facts, .drift { color:var(--muted); font-size:13px; }
+  table { width:100%; border-collapse:collapse; font-size:14px; table-layout:fixed; }
+  th, td { text-align:left; padding:8px; border-top:1px solid var(--line); vertical-align:top; }
+  th { color:var(--muted); font-weight:600; font-size:12px; text-transform:uppercase; letter-spacing:.04em; }
+  .pill { display:inline-block; padding:1px 8px; border-radius:999px; font-size:12px; font-weight:700; }
+  .pass { color:var(--pass); background:var(--pass-bg); }
+  .fail { color:var(--fail); background:var(--fail-bg); }
+  code { font-size:12.5px; white-space:pre-wrap; }
+  .evidence { color:var(--muted); }
+</style>
+</head>
+<body>
+<main>
+  <h1>ConfigSentry compliance report</h1>
+  <p class="sub">Audited {{ audited }}, {{ results|length }} device(s)</p>
+  {% for r in results %}
+  <section class="card">
+    <div class="head">
+      <h2>{{ r.device }}</h2>
+      <span class="score">{{ r.passed_count }}/{{ r.results|length }} passing</span>
+      <span class="facts">{{ r.source }}, {{ r.duration_s }} s{% if r.facts.version %}, IOS-XE {{ r.facts.version }}{% endif %}{% if r.facts.model %}, {{ r.facts.model }}{% endif %}</span>
+      {% if r.drift is not none %}<span class="drift">Drift vs Git baseline: +{{ r.drift.added|length }} / -{{ r.drift.removed|length }} lines</span>{% endif %}
+    </div>
+    <table>
+      <colgroup><col style="width:9%"><col style="width:45%"><col style="width:14%"><col style="width:32%"></colgroup>
+      <thead><tr><th>Rule</th><th>Check</th><th>Result</th><th>Evidence and fix</th></tr></thead>
+      <tbody>
+      {% for x in r.results %}
+        <tr>
+          <td><strong>{{ x.rule }}</strong></td>
+          <td>{{ x.title }}<div class="evidence">{{ x.cis }}</div></td>
+          <td>{% if x.passed %}<span class="pill pass">PASS</span>{% else %}<span class="pill fail">FAIL ({{ x.severity }})</span>{% endif %}</td>
+          <td>{% if not x.passed %}<div class="evidence">{{ x.problems|join("; ") }}</div><code>{{ x.fix }}</code>{% endif %}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </section>
+  {% endfor %}
+</main>
+</body>
+</html>
