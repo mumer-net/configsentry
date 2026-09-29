@@ -16,7 +16,7 @@ from rich.console import Console
 from rich.table import Table
 
 from configsentry.drift import compare, normalize
-from configsentry.engine import SEVERITY_RANK, audit_text
+from configsentry.engine import SEVERITY_RANK, AuditResult, audit_text
 from configsentry.faults import load_faults, selftest
 from configsentry.redact import redact_text
 from configsentry.report import print_result, write_html, write_json
@@ -62,6 +62,19 @@ def _collect_targets(args) -> tuple[list[Target], list[str]]:
     return targets, errors
 
 
+def _after_audit(results: list[AuditResult], args) -> None:
+    """Record every audit in SQLite, then alert on what changed since the last audit."""
+    from configsentry import alerts, store
+
+    db = store.connect(Path(args.db))
+    for result in results:
+        previous = store.last_audit(db, result.device)
+        store.save(db, result)
+        message = alerts.build_message(result, previous)
+        if message and not args.no_alerts:
+            alerts.send_if_configured(message, console.print)
+
+
 def run_audit(args) -> int:
     targets, errors = _collect_targets(args)
     results = []
@@ -81,6 +94,7 @@ def run_audit(args) -> int:
     if results:
         paths = write_json(results, Path(args.reports)), write_html(results, Path(args.reports))
         console.print(f"Reports: {paths[0]} and {paths[1]}")
+    _after_audit(results, args)
     if errors:
         return 1
     threshold = SEVERITY_RANK.get(args.fail_on, 0)
@@ -97,6 +111,8 @@ def _add_audit(sub) -> None:
     p.add_argument("--baselines", default="baselines")
     p.add_argument("--configs", default="configs", help="where redacted copies of live configs go")
     p.add_argument("--reports", default="reports")
+    p.add_argument("--db", default="configsentry.db")
+    p.add_argument("--no-alerts", action="store_true")
     p.add_argument(
         "--fail-on",
         choices=["none", "low", "medium", "high"],
@@ -248,6 +264,7 @@ def run_meraki(args) -> int:
     if results:
         write_json(results, Path(args.reports) / "meraki")
         write_html(results, Path(args.reports) / "meraki")
+    _after_audit(results, args)
     return 2 if any(r.failed for r in results) and args.fail_on != "none" else 0
 
 
@@ -266,7 +283,37 @@ def _add_meraki(sub) -> None:
     p.set_defaults(func=run_meraki)
 
 
-COMMANDS = [_add_audit, _add_baseline, _add_selftest, _add_timing, _add_rules, _add_meraki]
+def run_history(args) -> int:
+    from configsentry import store
+
+    rows = store.history(store.connect(Path(args.db)), args.device, args.days)
+    table = Table(title=f"Audit history, last {args.days} days", title_justify="left")
+    for column in ("When (UTC)", "Device", "Source", "Passed", "Failed", "Drift", "Seconds"):
+        table.add_column(column)
+    for row in rows:
+        drift = "-" if row["drift_added"] is None else f"+{row['drift_added']}/-{row['drift_removed']}"
+        table.add_row(
+            row["started_at"],
+            row["device"],
+            row["source"],
+            str(row["passed"]),
+            str(row["failed"]),
+            drift,
+            f"{row['duration_s']:.2f}",
+        )
+    console.print(table)
+    return 0
+
+
+def _add_history(sub) -> None:
+    p = sub.add_parser("history", help="show past audits from SQLite")
+    p.add_argument("--device")
+    p.add_argument("--days", type=int, default=7)
+    p.add_argument("--db", default="configsentry.db")
+    p.set_defaults(func=run_history)
+
+
+COMMANDS = [_add_audit, _add_baseline, _add_selftest, _add_timing, _add_rules, _add_meraki, _add_history]
 
 
 def build_parser() -> argparse.ArgumentParser:

@@ -16,6 +16,9 @@ def audit(tmp_path, *files, fail_on="high"):
             fail_on,
             "--reports",
             str(tmp_path / "reports"),
+            "--db",
+            str(tmp_path / "cs.db"),
+            "--no-alerts",
             "--baselines",
             str(tmp_path / "baselines"),
         ]
