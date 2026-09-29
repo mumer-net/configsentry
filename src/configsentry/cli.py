@@ -230,7 +230,43 @@ def _add_rules(sub) -> None:
     p.set_defaults(func=run_rules)
 
 
-COMMANDS = [_add_audit, _add_baseline, _add_selftest, _add_timing, _add_rules]
+def run_meraki(args) -> int:
+    from configsentry import meraki_checks
+    from configsentry.meraki_source import FixtureSource, LiveSource, discover, record
+
+    if args.discover:
+        discover(LiveSource())
+        return 0
+    if args.record:
+        record(LiveSource(), args.org, args.network, Path(args.record))
+        console.print(f"Recorded live API responses to {args.record}")
+        return 0
+    source = FixtureSource(Path(args.fixtures)) if args.fixtures else LiveSource()
+    results = meraki_checks.audit(meraki_checks.load_intent(Path(args.intent)), source)
+    for result in results:
+        print_result(result)
+    if results:
+        write_json(results, Path(args.reports) / "meraki")
+        write_html(results, Path(args.reports) / "meraki")
+    return 2 if any(r.failed for r in results) and args.fail_on != "none" else 0
+
+
+def _add_meraki(sub) -> None:
+    p = sub.add_parser("meraki", help="check Meraki stacks, uplinks, APs, and device health against intent")
+    p.add_argument("--intent", default="intent/meraki.yaml")
+    p.add_argument("--fixtures", help="read recorded API responses instead of calling the API")
+    p.add_argument("--discover", action="store_true", help="list orgs, networks, devices, and stacks")
+    p.add_argument("--record", metavar="DIR", help="save live API responses as fixtures")
+    p.add_argument("--org", help="organization ID for --record")
+    p.add_argument("--network", nargs="*", default=[], help="network IDs for --record")
+    p.add_argument("--reports", default="reports")
+    p.add_argument("--db", default="configsentry.db")
+    p.add_argument("--no-alerts", action="store_true")
+    p.add_argument("--fail-on", choices=["none", "any"], default="none")
+    p.set_defaults(func=run_meraki)
+
+
+COMMANDS = [_add_audit, _add_baseline, _add_selftest, _add_timing, _add_rules, _add_meraki]
 
 
 def build_parser() -> argparse.ArgumentParser:
