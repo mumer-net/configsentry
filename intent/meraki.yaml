@@ -1,0 +1,10 @@
+# Intended state of my DevNet Meraki sandbox org. IDs and serials come from `configsentry meraki --discover`.
+# The sandbox network has one switch and no switch stack, so no stacks are listed.
+organization_id: "669910444571370192"
+networks:
+  - id: L_669910444571384568
+    name: branch_office
+    uplinks:            # switch serial: ports that must be Connected
+      QBSB-5LDN-UFG5: ["25"]
+    min_access_points: 1
+    all_devices_online: true

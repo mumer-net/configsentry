@@ -1,0 +1,111 @@
+[
+  {
+    "name": "",
+    "serial": "QBSA-4ZHW-FZSB",
+    "mac": "4c:c8:a1:02:00:05",
+    "networkId": "L_669910444571384568",
+    "productType": "appliance",
+    "model": "MX100",
+    "address": "",
+    "lat": 37.4180951010362,
+    "lng": -122.098531723022,
+    "notes": "",
+    "tags": [],
+    "wan1Ip": null,
+    "wan2Ip": null,
+    "configurationUpdatedAt": "2026-09-29T03:43:43Z",
+    "firmware": "Not running configured version",
+    "url": "https://n190.dashboard.meraki.com/branch_office-ap/n/ciU0Qc-c/manage/nodes/new_list/84424578433029",
+    "details": [
+      {
+        "name": "Running software version",
+        "value": "MX 18.107.13"
+      },
+      {
+        "name": "device mode",
+        "value": "managed"
+      }
+    ]
+  },
+  {
+    "name": "",
+    "serial": "QBSB-5LDN-UFG5",
+    "mac": "4c:c8:a1:06:00:05",
+    "networkId": "L_669910444571384568",
+    "productType": "switch",
+    "model": "MS250-24",
+    "address": "",
+    "lat": 37.4180951010362,
+    "lng": -122.098531723022,
+    "notes": "",
+    "tags": [],
+    "lanIp": null,
+    "configurationUpdatedAt": "2026-09-29T03:43:45Z",
+    "firmware": "Not running configured version",
+    "url": "https://n190.dashboard.meraki.com/branch_office-sw/n/K1JXOd-c/manage/nodes/new_list/84424578695173",
+    "details": [
+      {
+        "name": "Running software version",
+        "value": "MS 18.1.8.1"
+      },
+      {
+        "name": "device mode",
+        "value": "managed"
+      }
+    ]
+  },
+  {
+    "name": "",
+    "serial": "QBSC-2CXF-JRZF",
+    "mac": "4c:c8:a1:0a:00:06",
+    "networkId": "L_669910444571384568",
+    "productType": "wireless",
+    "model": "MR20",
+    "address": "",
+    "lat": 37.4180951010362,
+    "lng": -122.098531723022,
+    "notes": "",
+    "tags": [],
+    "lanIp": null,
+    "configurationUpdatedAt": "2026-09-29T03:43:47Z",
+    "firmware": "Not running configured version",
+    "url": "https://n190.dashboard.meraki.com/branch_office-wi/n/pH8F1a-c/manage/nodes/new_list/84424578957318",
+    "details": [
+      {
+        "name": "Running software version",
+        "value": "MR 30.7.1"
+      },
+      {
+        "name": "device mode",
+        "value": "managed"
+      }
+    ]
+  },
+  {
+    "name": "",
+    "serial": "QBSD-2C5R-G5YA",
+    "mac": "4c:c8:a1:0f:01:25",
+    "networkId": "L_669910444571384568",
+    "productType": "camera",
+    "model": "MV12W",
+    "address": "",
+    "lat": 37.4180951010362,
+    "lng": -122.098531723022,
+    "notes": "",
+    "tags": [],
+    "lanIp": null,
+    "configurationUpdatedAt": "2026-09-29T03:43:50Z",
+    "firmware": "Not running configured version",
+    "url": "https://n190.dashboard.meraki.com/branch_office-ca/n/CrAxDa-c/manage/nodes/new_list/84424579285285",
+    "details": [
+      {
+        "name": "Running software version",
+        "value": "MV 7.3.2"
+      },
+      {
+        "name": "device mode",
+        "value": "managed"
+      }
+    ]
+  }
+]

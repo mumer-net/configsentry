@@ -1,0 +1,46 @@
+[
+  {
+    "mac": "4c:c8:a1:02:00:05",
+    "name": "",
+    "network": {
+      "id": "L_669910444571384568"
+    },
+    "productType": "appliance",
+    "serial": "QBSA-4ZHW-FZSB",
+    "status": "dormant",
+    "tags": []
+  },
+  {
+    "mac": "4c:c8:a1:06:00:05",
+    "name": "",
+    "network": {
+      "id": "L_669910444571384568"
+    },
+    "productType": "switch",
+    "serial": "QBSB-5LDN-UFG5",
+    "status": "dormant",
+    "tags": []
+  },
+  {
+    "mac": "4c:c8:a1:0a:00:06",
+    "name": "",
+    "network": {
+      "id": "L_669910444571384568"
+    },
+    "productType": "wireless",
+    "serial": "QBSC-2CXF-JRZF",
+    "status": "dormant",
+    "tags": []
+  },
+  {
+    "mac": "4c:c8:a1:0f:01:25",
+    "name": "",
+    "network": {
+      "id": "L_669910444571384568"
+    },
+    "productType": "camera",
+    "serial": "QBSD-2C5R-G5YA",
+    "status": "dormant",
+    "tags": []
+  }
+]
