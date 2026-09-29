@@ -1,0 +1,14 @@
+# Intended state of the healthy test network in tests/fixtures/meraki/healthy.
+organization_id: "1234567"
+networks:
+  - id: L_1234567890
+    name: Building A
+    stacks:
+      - name: IDF1-stack
+        members: [Q3AA-AAAA-0001, Q3AA-AAAA-0002, Q3AA-AAAA-0003]
+        active: Q3AA-AAAA-0001
+    uplinks:            # switch serial: ports that must be Connected
+      Q3AA-AAAA-0001: ["49", "50"]
+      Q3AA-AAAA-0002: ["49"]
+    min_access_points: 4
+    all_devices_online: true

@@ -1,0 +1,79 @@
+[
+  {
+    "serial": "Q3AA-AAAA-0001",
+    "name": "IDF1-SW1",
+    "mac": "00:18:0a:00:00:01",
+    "network": {
+      "id": "L_1234567890"
+    },
+    "productType": "switch",
+    "status": "online",
+    "tags": []
+  },
+  {
+    "serial": "Q3AA-AAAA-0002",
+    "name": "IDF1-SW2",
+    "mac": "00:18:0a:00:00:02",
+    "network": {
+      "id": "L_1234567890"
+    },
+    "productType": "switch",
+    "status": "online",
+    "tags": []
+  },
+  {
+    "serial": "Q3AA-AAAA-0003",
+    "name": "IDF1-SW3",
+    "mac": "00:18:0a:00:00:03",
+    "network": {
+      "id": "L_1234567890"
+    },
+    "productType": "switch",
+    "status": "online",
+    "tags": []
+  },
+  {
+    "serial": "Q3AB-BBBB-0001",
+    "name": "AP-1",
+    "mac": "00:18:0a:00:01:01",
+    "network": {
+      "id": "L_1234567890"
+    },
+    "productType": "wireless",
+    "status": "online",
+    "tags": []
+  },
+  {
+    "serial": "Q3AB-BBBB-0002",
+    "name": "AP-2",
+    "mac": "00:18:0a:00:01:02",
+    "network": {
+      "id": "L_1234567890"
+    },
+    "productType": "wireless",
+    "status": "online",
+    "tags": []
+  },
+  {
+    "serial": "Q3AB-BBBB-0003",
+    "name": "AP-3",
+    "mac": "00:18:0a:00:01:03",
+    "network": {
+      "id": "L_1234567890"
+    },
+    "productType": "wireless",
+    "status": "online",
+    "tags": []
+  },
+  {
+    "serial": "Q3AB-BBBB-0004",
+    "name": "AP-4",
+    "mac": "00:18:0a:00:01:04",
+    "network": {
+      "id": "L_1234567890"
+    },
+    "productType": "wireless",
+    "status": "online",
+    "tags": []
+  }
+]

@@ -1,0 +1,65 @@
+[
+  {
+    "name": "IDF1-SW1",
+    "serial": "Q3AA-AAAA-0001",
+    "model": "C9350-48HX",
+    "networkId": "L_1234567890",
+    "productType": "switch",
+    "mac": "00:18:0a:00:00:01",
+    "firmware": "switch-17-15"
+  },
+  {
+    "name": "IDF1-SW2",
+    "serial": "Q3AA-AAAA-0002",
+    "model": "C9350-48HX",
+    "networkId": "L_1234567890",
+    "productType": "switch",
+    "mac": "00:18:0a:00:00:02",
+    "firmware": "switch-17-15"
+  },
+  {
+    "name": "IDF1-SW3",
+    "serial": "Q3AA-AAAA-0003",
+    "model": "C9350-48HX",
+    "networkId": "L_1234567890",
+    "productType": "switch",
+    "mac": "00:18:0a:00:00:03",
+    "firmware": "switch-17-15"
+  },
+  {
+    "name": "AP-1",
+    "serial": "Q3AB-BBBB-0001",
+    "model": "CW9178I",
+    "networkId": "L_1234567890",
+    "productType": "wireless",
+    "mac": "00:18:0a:00:01:01",
+    "firmware": "wireless-31-1"
+  },
+  {
+    "name": "AP-2",
+    "serial": "Q3AB-BBBB-0002",
+    "model": "CW9178I",
+    "networkId": "L_1234567890",
+    "productType": "wireless",
+    "mac": "00:18:0a:00:01:02",
+    "firmware": "wireless-31-1"
+  },
+  {
+    "name": "AP-3",
+    "serial": "Q3AB-BBBB-0003",
+    "model": "CW9178I",
+    "networkId": "L_1234567890",
+    "productType": "wireless",
+    "mac": "00:18:0a:00:01:03",
+    "firmware": "wireless-31-1"
+  },
+  {
+    "name": "AP-4",
+    "serial": "Q3AB-BBBB-0004",
+    "model": "CW9178I",
+    "networkId": "L_1234567890",
+    "productType": "wireless",
+    "mac": "00:18:0a:00:01:04",
+    "firmware": "wireless-31-1"
+  }
+]

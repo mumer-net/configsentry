@@ -1,0 +1,36 @@
+[
+  {
+    "id": "8473",
+    "name": "IDF1-stack",
+    "serials": [
+      "Q3AA-AAAA-0001",
+      "Q3AA-AAAA-0002",
+      "Q3AA-AAAA-0003"
+    ],
+    "isMonitorOnly": false,
+    "virtualMac": "00:18:0a:4f:21:19",
+    "members": [
+      {
+        "serial": "Q3AA-AAAA-0001",
+        "name": "IDF1-SW1",
+        "model": "C9350-48HX",
+        "mac": "00:18:0a:00:00:01",
+        "role": "active"
+      },
+      {
+        "serial": "Q3AA-AAAA-0002",
+        "name": "IDF1-SW2",
+        "model": "C9350-48HX",
+        "mac": "00:18:0a:00:00:02",
+        "role": "standby"
+      },
+      {
+        "serial": "Q3AA-AAAA-0003",
+        "name": "IDF1-SW3",
+        "model": "C9350-48HX",
+        "mac": "00:18:0a:00:00:03",
+        "role": "member"
+      }
+    ]
+  }
+]
