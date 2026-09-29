@@ -1,4 +1,4 @@
-"""ConfigSentry command line: audit, baseline, selftest, timing, rules."""
+"""ConfigSentry command line: audit, baseline, selftest, timing, rules, meraki, history, serve."""
 
 from __future__ import annotations
 

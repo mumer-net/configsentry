@@ -4,7 +4,7 @@ Checks Cisco IOS-XE configs against 15 CIS benchmark rules and Meraki networks a
 
 **Result:** caught 23/23 seeded misconfigurations with 0 false positives, and cut a 15-rule audit from about 5 minutes by hand to under 4 seconds per device.
 
-**Stack:** Python, Netmiko, TextFSM, Meraki Dashboard API, SQLite, pytest, GitHub Actions
+**Stack:** Python, Netmiko, TextFSM, Meraki Dashboard API, SQLite, pytest, GitHub Actions, Docker, Prometheus
 
 [![ci](https://github.com/mumer-net/configsentry/actions/workflows/ci.yml/badge.svg)](https://github.com/mumer-net/configsentry/actions/workflows/ci.yml)
 
@@ -32,9 +32,10 @@ flowchart LR
   C --> R[15 CIS rules]
   C --> DR[drift vs baselines/ in Git]
   M[Meraki Dashboard API] --> MC[Meraki checks vs intent]
-  R --> O[reports, SQLite history, Webex alerts]
+  R --> O[reports, SQLite, Webex, Prometheus]
   DR --> O
   MC --> O
+  O --> MCP[read-only MCP server]
 ```
 
 | Rule | Check | CIS Cisco IOS XE 17.x v2.1.0 |
@@ -68,6 +69,7 @@ A few design choices:
 - It's read-only. Every command goes through an allowlist of two `show` commands, and a test fails the build if any code enters configuration mode.
 - Secrets stay out of reports, alerts, and Git. Reports show `<redacted>`, and baselines store keyed HMAC fingerprints, so a changed password still shows up as drift without the password or its hash being committed.
 - `show running-config` hides defaults, so each rule decides what a missing line means. A missing `exec-timeout` is the compliant 10-minute default; a missing `ip ssh time-out` is the 120-second default, which fails.
+- The MCP server is read-only too. It never imports the SSH code, so no tool call can reach a device, and it refuses paths outside the configs folder.
 - Alerts fire on change. A rule that fails on every run alerts once when it starts failing and once when it's fixed.
 - Every rule has at least one seeded fault, and the self-test checks that each fault trips its own rule and no other.
 
@@ -86,7 +88,11 @@ cp .env.example .env                                          # add DevNet sandb
 uv run configsentry audit --device c8k                        # live audit over SSH
 uv run configsentry meraki                                    # Meraki checks against intent/meraki.yaml
 uv run configsentry history                                   # past audits from SQLite
+uv run configsentry serve                                     # Prometheus metrics on :9105/metrics
+uv run configsentry-mcp                                       # read-only MCP server over stdio
 ```
+
+Docker: `docker run --rm -v "$PWD/tests/fixtures:/fixtures:ro" ghcr.io/mumer-net/configsentry audit --file /fixtures/golden.cfg`
 
 ## Method
 
@@ -96,7 +102,7 @@ uv run configsentry history                                   # past audits from
 
 ## Tests
 
-90 pytest tests run in GitHub Actions on every push. They cover config parsing (including banners), secret redaction, all 15 rules, the seeded-fault self-test, read-only enforcement, drift, the CLI, the Meraki checks with seeded API faults, and SQLite history and alerts. Lint is ruff with the bandit security rules turned on.
+95 pytest tests run in GitHub Actions on every push. They cover config parsing (including banners), secret redaction, all 15 rules, the seeded-fault self-test, read-only enforcement, drift, the CLI, the Meraki checks with seeded API faults, SQLite history and alerts, the Prometheus exporter, and the MCP server. CI also builds the Docker image and runs a smoke audit inside it. Lint is ruff with the bandit security rules turned on.
 
 ## What I'd do next
 
@@ -109,12 +115,13 @@ uv run configsentry history                                   # past audits from
 ## Build notes
 
 - Goal: automate the post-deployment checks I used to do by hand, and measure the time saved.
-- Built in two releases: v0.1 (IOS-XE rules, self-test, drift, CI), v0.2 (Meraki checks, SQLite history, Webex alerts).
+- Built in three releases: v0.1 (IOS-XE rules, self-test, drift, CI), v0.2 (Meraki checks, SQLite history, Webex alerts), v0.3 (Prometheus metrics, Docker image, MCP server).
 - Ran it against the DevNet Catalyst 8000 Always-On sandbox over SSH. The first audit failed 5 of 15 rules, including no ACL on the VTY lines and a reversible `enable password`.
 - The shared sandbox changed under me. A few hours after I saved the baseline, an audit showed drift of +2 / -1 lines: the enable secret had changed and a new privilege-15 local user had appeared. The HMAC fingerprints showed the secret changed without exposing it.
 - The sandbox rejected valid credentials twice. Both times the password matched the portal, and ending the reservation and launching a new one fixed it.
 - The Meraki sandbox was different from what I planned for: a reservable, dedicated org instead of a shared read-only one, with one switch, one access point, an appliance, and a camera, and no switch stack. I wrote the intent file from `configsentry meraki --discover` and the recorded responses, not from guesses. All four devices report `dormant`, so MK-05 fails on real data.
 - The Catalyst 9000 Always-On sandbox never came up for me. Port 22 accepted the TCP connection and then reset before the SSH banner, and a RESTCONF request returned 502 from Cisco's gateway, so I only claim the Cat8K.
+- Ran the Docker image against the live Cat8K with credentials passed only at run time, and checked the MCP server with a stdio client: it listed its four tools, returned the Cat8K's failing rules from history, and refused a `../` path.
 - Timing myself by hand showed why the rules are code: in my first trials I missed rules where a missing line means fail, and I read fake config inside a banner as real.
 
 ## License

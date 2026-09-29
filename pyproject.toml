@@ -1,6 +1,6 @@
 [project]
 name = "configsentry"
-version = "0.2.0"
+version = "0.3.0"
 description = "Compliance and drift auditor for Cisco IOS-XE and Meraki networks"
 readme = "README.md"
 requires-python = ">=3.12"
