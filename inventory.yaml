@@ -7,9 +7,3 @@ devices:
     device_type: cisco_xe
     username_env: C8K_USERNAME
     password_env: C8K_PASSWORD
-  - name: c9k
-    host: devnetsandboxiosxec9k.cisco.com
-    port: 22
-    device_type: cisco_xe
-    username_env: C9K_USERNAME
-    password_env: C9K_PASSWORD
