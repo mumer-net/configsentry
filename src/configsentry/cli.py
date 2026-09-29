@@ -313,7 +313,36 @@ def _add_history(sub) -> None:
     p.set_defaults(func=run_history)
 
 
-COMMANDS = [_add_audit, _add_baseline, _add_selftest, _add_timing, _add_rules, _add_meraki, _add_history]
+def run_serve(args) -> int:
+    from configsentry import exporter
+
+    def audit_all() -> list[AuditResult]:
+        results = []
+        for name, text, source, facts, started in _collect_targets(args)[0]:  # unreachable devices go stale
+            result = audit_text(text, name, source, facts, started)
+            baseline = Path(args.baselines) / f"{name}.cfg"
+            if baseline.exists() and _key():
+                result.drift = compare(baseline.read_text(), text, _key(), name)
+            results.append(result)
+        return results
+
+    console.print(f"Serving metrics on :{args.port}/metrics, auditing every {args.interval} s")
+    exporter.serve(audit_all, args.interval, args.port)
+    return 0
+
+
+def _add_serve(sub) -> None:
+    p = sub.add_parser("serve", help="audit on a schedule and expose Prometheus metrics")
+    p.add_argument("--inventory", default="inventory.yaml")
+    p.add_argument("--device", nargs="*")
+    p.add_argument("--file", nargs="*", help="audit saved files instead (for demos)")
+    p.add_argument("--baselines", default="baselines")
+    p.add_argument("--interval", type=int, default=300)
+    p.add_argument("--port", type=int, default=9105)
+    p.set_defaults(func=run_serve)
+
+
+COMMANDS = [_add_audit, _add_baseline, _add_selftest, _add_timing, _add_rules, _add_meraki, _add_history, _add_serve]
 
 
 def build_parser() -> argparse.ArgumentParser:
